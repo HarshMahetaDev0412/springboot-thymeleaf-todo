@@ -1,0 +1,361 @@
+@import url('global_variable.css');
+
+*{
+	font-size:12px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+.container 
+{   
+	padding-right: 0px;
+    padding-left: 0px;
+}
+.alert 
+{
+    padding: 3px;
+    margin-bottom: 1px;
+}
+
+.fadealert{
+	margin-bottom: 10px;
+}
+
+.row>*{
+	margin-top: .5rem;
+}
+.row{
+	margin-top: calc(-1 *.5rem);
+}
+
+/*//////////////TBALE/////////////////////*/
+.table th
+{
+	padding:5px 10px;
+}
+.table thead th {
+    font-size: var(--header_font_size);
+    /* font-variant: all-small-caps; */
+    color: var(--tb_header_font_color);
+    text-align: center;
+}
+.table tbody td {
+    font-size: var(--font_size);
+}
+.table td {
+	padding:5px 10px;
+	white-space: nowrap;
+}
+.table{
+color: #212529;
+/* --bs-table-active-color: #212529;
+--bs-table-active-bg: red;
+--bs-table-hover-color: #212529;
+--bs-table-hover-bg: skyblue; */
+}
+.table-bordered > thead > tr > th, .table-bordered > tbody > tr > th, .table-bordered > tfoot > tr > th, .table-bordered > thead > tr > td, .table-bordered > tbody > tr > td, .table-bordered > tfoot > tr > td {
+    border: 1px solid #ddd;
+}
+
+.table-bordered > thead > tr > th,
+.table-bordered > tbody > tr > td  {
+    border-bottom-width: 2px;
+}
+
+/* /////////////////////////////////////////////////////////////////////////////////// */
+
+.topheader{
+font-size: var(--top_header_font_size);
+/* font-variant: all-small-caps; */
+color: var(--top_header_font_color);
+/* white-space: nowrap; */
+font-weight: bold;
+}
+
+.subheader{
+font-size: var(--sub_header_font_size);
+/* font-variant: all-small-caps; */
+color: var(--sub_header_font_color);
+/* white-space: nowrap; */
+font-weight: bold;
+border-bottom:2px solid;
+mragin-top:10px; 
+padding-bottom:4px;
+}
+
+.subheader1{
+font-size: var(--sub_header_font_size);
+/* font-variant: all-small-caps; */
+color: var(--top_header_font_color);
+/* white-space: nowrap; */
+font-weight: bold;
+}
+
+/*////////////////////////////CARD/////////////////////////////*/
+.cardmain
+{
+	background:var(--card_bg_color);
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.cdbody
+{
+	background:white;
+	margin:10px;
+	border-radius: 10px;
+	padding-bottom: 5px;
+	padding-top: 8px;
+    padding-right: 8px;
+    padding-left: 8px;
+}
+
+.cdheader 
+{
+	border-bottom:none;
+	background:var(--card_bg_color);
+	padding-bottom: 0px;
+}
+
+.cdfooter 
+{
+	border-top:none;
+	background:var(--card_bg_color);
+	padding-top: 0px;
+}
+
+/*////////////////BUTTON/////////////////////*/
+.com-btn
+{
+	background:var(--com_button_color);
+	padding: 4px 8px;
+	border-color:var(--com_button_color);
+	font-weight: bold;
+}
+
+
+/*//////////////////LODING IMG ///////////////////*/
+
+#loading {
+   width: 100%;
+   height: 100%;
+   top: 0;
+   left: 0;
+   position: fixed;
+   display: block;
+   opacity: 0.7;
+   background-color: #fff;
+   z-index: 3500;
+   text-align: center;
+}
+#loading-image {
+  position: absolute;
+  top: 45%; /*window.innerHeight/2; /*300px;*/
+  left: 40%; /*window.innerWidth/2; /*240px;*/
+  right: 40%;
+  bottom: 50%;
+  z-index: 100;
+  align-self:center;
+}
+
+.s-red{
+	color:red;
+}
+
+
+/*--------btn-group------------*/
+
+.btngrp
+{
+	font-size:14px;
+	font-weight: bold;
+	color:var(--navbar_dropdown_font_color);
+	align-self: center;
+	border-radius:50px;
+	padding:4px 10px 4px 10px;
+}
+.subbtngrp
+{
+	font-size:12px;
+	font-weight: bold;
+	color:var(--navbar_dropdown_font_color);
+	align-self: center;
+	border-radius:50px;
+	padding:2px 10px 2px 10px;
+	background:#cccccc;
+	border:none;
+}
+.subbtngrp1 {
+    font-size: 12px;
+    font-weight: bold;
+    color: var(--navbar_dropdown_font_color);
+    align-self: center;
+    border-radius: 50px;
+    padding: 5px 15px 5px 15px;
+    background:#cccccc;
+    border:none;
+}
+.btnactive, .btngrp:hover, .subbtngrp:hover, .subbtngrp1:hover
+{
+	background:var(--header_color);
+	color:var(--header_font_color);
+	/* border:1px solid var(--header_color); */
+	font-weight: bold;
+}
+
+/* ----------------datepicker-------------- */
+.datepicker table tr th {
+    /* background: var(--header_color); */
+    border-radius: 0px;
+    /* color: var(--header_font_color); */
+}
+
+.datepicker thead tr:nth-child(2) {
+	color: var(--header_font_color);
+   	background: var(--header_color);
+}
+.datepicker thead tr:nth-child(3) {
+    background: var(--card_bg_color);
+    color: var(--top_header_font_color);
+}
+.datepicker table tr td.active:active, 
+.datepicker table tr td.active.highlighted:active, 
+.datepicker table tr td.active.active, 
+.datepicker table tr td.active.highlighted.active {
+    color: var(--header_font_color);
+    background-color: var(--header_color);
+    border-color: var(--header_color);
+}
+
+
+/*------------input group-----------  */
+.input-group{
+flex-wrap: nowrap;
+}
+
+/*-----------model----------  */
+.mdbody {
+    padding: 0px;
+    background: var(--card_bg_color);
+}
+.modal-footer{
+	display:inline;
+}
+
+.select_btn{
+	font-weight: bold;
+	color: #000;
+    background-color: #0dcaf0;
+    border-color: #0dcaf0;
+	border-radius: 50px;
+}
+.config_btn{
+	font-weight: bold;
+	background:#a6ff4d;
+	border-color:#a6ff4d;
+	color:black;
+	border-radius: 50px;
+}
+.request_btn{
+	font-weight: bold;
+	background:blue;
+	border-color:blue;
+	color:white;
+	border-radius: 50px;
+}
+
+.modify_btn{
+	font-weight: bold;
+	background: #8600b3;
+	border-color: #8600b3;
+	color:white;
+	border-radius: 50px;
+}
+
+
+/* ---------Check Box----------- */
+/* .form-check-input:checked {
+    background-color: var(--header_color);
+    border-color: var(--header_color);
+}
+ */
+ 
+ /* ---------Radio Button------------*/
+ .pillbox
+ {
+ 	padding:2px 10px 2px 10px;
+ 	border-radius: 35px;
+ 	font-weight:bold;
+ }
+ 
+ .yesRdBtn
+ {
+ 	background:green;
+ 	color:white;
+ }
+ 
+ .noRdBtn
+ {
+ 	background:red;
+ 	color:white;
+ }
+ 
+ /*---------Accordion--------*/
+ .accor_item
+ {
+ 	margin:5px;
+ }
+ 
+ .accor-btn
+ {
+ 	padding:5px;
+ 	font-weight:bold;
+ 	background:var(--card_bg_color);
+ 	color:var(--top_header_font_color);
+ }
+ 
+ .accor-body {
+    padding: 10px;
+}
+
+.accordion-button::after{
+	font-family:"FontAwesome";
+	content:'\f055';
+	font-size:14px;
+	background-image:url('');
+}
+.accordion-button:not(.collapsed)::after{
+	font-family:"FontAwesome";
+	content:'\f056';
+	font-size:14px;
+	background-image:url('');
+	transform: rotate(-360deg);
+}
+.accordion-button:not(.collapsed) {
+    color: var(--header_font_color);
+    background-color: var(--header_color);
+    box-shadow: inset 0 -1px 0 rgb(0 0 0 / 13%);
+}
+
+.table{
+--bs-table-active-bg: var(--table-active-bg-color);
+}
+
+.edit_icon
+{
+	font-family:"FontAwesome";
+	content:'\f044';
+	font-size:14px;
+	 color: var(--header_color);
+}
+
+/*---icon font color*/
+.pdf_icon
+{
+	color:red;
+}
+.mail_icon
+{
+	color:blue;
+}
+.excel_icon
+{
+	color:green;
+}

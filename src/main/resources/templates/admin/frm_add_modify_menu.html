@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html
+th:replace="~{home/base :: parent('Add/Modify Menu',~{::#mainContent},~{::#customeScripts})}"
+xmlns:th="http://www.thymleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+
+<div id="customeScripts">
+<script type="text/javascript">
+function setActiveInactive(obj)
+{
+	if(obj.checked)
+	{
+		document.getElementById("lb").innerHTML="Active";
+		document.getElementById("status_flag").value="Y";
+	}
+	else
+	{
+		document.getElementById("lb").innerHTML="In-Active";
+		document.getElementById("status_flag").value="N";
+	}
+}
+
+function refresh()
+{
+	var module_cd = document.forms[0].module_cd.value;
+	var menu_cd = document.forms[0].menu_cd.value;
+	
+	var pre_module_cd = document.forms[0].pre_module_cd.value;
+	 
+	if(module_cd == "" || module_cd == "0")
+	{
+		menu_cd="0";
+	}
+	 
+	var url = "frm_add_modify_menu?module_cd="+module_cd+"&menu_cd="+menu_cd;
+	
+	document.getElementById("loading").style.visibility = "visible";
+	location.replace(url);
+}
+
+function hidegrp_id()
+{	
+	if (document.forms[0].group_cd.value == 'other')
+	{
+		document.getElementById("otherGropeDiv").style.display = "block";
+		document.getElementById("groupDiv").className = "col-sm-5 col-xs-5 col-md-5";
+		document.forms[0].new_grp_nm.style.visibility='visible'; 
+		document.forms[0].new_grp_nm.focus();
+		document.forms[0].grpNm.value = '';
+	}
+	else
+	{
+		document.getElementById("groupDiv").className = "col-sm-9 col-xs-9 col-md-9";
+		document.getElementById("otherGropeDiv").style.display = "none";
+		document.forms[0].new_grp_nm.style.visibility='hidden'; 
+		document.forms[0].grpNm.value=document.forms[0].group_cd[document.forms[0].group_cd.selectedIndex].innerText;
+	}
+}
+
+function doSubmit()
+{
+	var module_cd = document.forms[0].module_cd.value;
+	var menu_cd = document.forms[0].menu_cd.value;
+	var menu_nm = document.forms[0].menu_nm.value;
+	var menu_type = document.forms[0].menu_type.value;
+	var menu_path = document.forms[0].menu_path.value;
+	var group_priority = document.forms[0].group_priority.value;
+	
+	var group_cd = document.forms[0].group_cd.value;
+	var new_grp_nm = document.forms[0].new_grp_nm.value;
+	
+	var msg="";
+	var flag=true;
+	
+	if(module_cd=="" || trim(module_cd) == "" || module_cd == "0")
+	{
+		msg+="Please Select Module!\n";
+		flag=false;
+	}
+	if(menu_cd=="" || trim(menu_cd) == "")
+	{
+		msg+="Please Select Menu!\n";
+		flag=false;
+	}
+	if(menu_nm=="" || trim(menu_nm) == "")
+	{
+		msg+="Please Enter Menu Name!\n";
+		flag=false;
+	}
+	if(menu_path=="" || trim(menu_path) == "")
+	{
+		msg+="Please Enter Menu Path!\n";
+		flag=false;
+	}
+	if(menu_type=="" || trim(menu_type) == "")
+	{
+		msg+="Please Select Menu Type!\n";
+		flag=false;
+	}
+	if(group_priority=="" || trim(group_priority) == "")
+	{
+		msg+="Please Enter Menu Priority!\n";
+		flag=false;
+	}
+	
+	if(group_cd == "other")
+	{
+		if(new_grp_nm=="" || trim(new_grp_nm) == "")
+		{
+			msg+="Please Enter Sub Module Name!\n";
+			flag=false;
+		}
+	}
+	else if(group_cd == "0")
+	{
+		msg+="Please Select Sub Module Name!\n";
+		flag=false;
+	}
+	
+	document.forms[0].grpNm.value=document.forms[0].group_cd[document.forms[0].group_cd.selectedIndex].innerText;
+	
+	if(flag)
+	{
+		var a
+		if(menu_cd!="0")
+		{
+			a= confirm("Do you Want to Modify Menu Detail?");
+		}
+		else
+		{
+			a= confirm("Do you Want to Add Menu Detail?");	
+		}
+		if(a)
+		{
+			document.getElementById("loading").style.visibility = "visible";
+			document.forms[0].submit();
+		}
+	}
+	else
+	{
+		alert(msg);
+	}
+}
+</script>
+</div>
+<div id="mainContent">
+<form action="/admin/frm_add_modify_menu" method="post">
+	<div class="container-lg mt-5 " >
+		<div class="fadealert" th:if="${message != null and message.contains('successfully')}">
+		  <div class='container'>
+		    <div class='alert alert-success'>
+		      <i class='fa fa-check-circle fa-lg'></i>&nbsp;
+		      <span th:text="${message}">Success message here</span>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="fadealert" th:if="${message != null and (message.contains('Error') or message.contains('Empty'))}">
+		  <div class='container'>
+		    <div class='alert alert-danger'>
+		      <i class='fa fa-times-circle fa-lg'></i>&nbsp;
+		      <span th:text="${message}">Error message here</span>
+		    </div>
+		  </div>
+		</div>
+		
+		<div class="card cardmain">
+			<div class="card-header cdheader topheader">
+			    Add/Modify Menu
+			</div>
+			<div class="card-body cdbody">
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Module Name<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<select class="form-select form-select-sm" name="module_cd" id="module_cd" onchange="refresh();">
+									<option value="0" selected="selected"> -- Select -- </option>
+									<!-- <option th:each="module : ${global_module}" th:value="${module.module_cd}" th:text="${module.module_name}">Module Name</option> -->
+									<option th:each="module : ${global_module}" 
+							            th:value="${module.module_cd}" 
+							            th:text="${module.module_name}"
+							            th:selected="${module.module_cd == module_cd}">Module Name
+							        </option>
+								</select>
+								<!-- <script>
+									const urlParams1 = new URLSearchParams(window.location.search);
+									const varValue1 = urlParams1.get('module_cd');
+	
+								    if (varValue1) {
+								        document.addEventListener("DOMContentLoaded", function() {
+								            document.forms[0].module_cd.value = varValue1;
+								        });
+								    }
+								</script> -->
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">	
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Select Menu<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<select class="form-select form-select-sm" name="menu_cd" id="menu_cd" onchange="refresh();">
+									<option value="0">New Menu</option>
+									<option th:each="form : ${form}" th:value="${form.form_cd}" th:text="${form.formNm}"
+									th:selected="${form.form_cd == menu_cd}">Form Name</option>
+								</select>
+								<!-- <script>
+									const urlParams = new URLSearchParams(window.location.search);
+									const varValue = urlParams.get('menu_cd');
+	
+								    if (varValue) {
+								        document.addEventListener("DOMContentLoaded", function() {
+								            document.forms[0].module_cd.value = varValue;
+								        });
+								    }
+								</script> -->
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3"> 
+						<div class="form-group row">
+			    			<label class="form-label"><b>Menu Name<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<input type="text" class="form-control form-control-sm" name="menu_nm" th:value="${formDetails?.formNm ?: ''}" size="40" maxLength="50" title="Max Length 50 chars">
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Sub Module Name<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div id="groupDiv" class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+								<select class="form-select form-select-sm" name="group_cd" id="group_cd" onchange="hidegrp_id();" onblur="hidegrp_id();">
+									<option value="0"> -- Select -- </option>
+									<option value="other">other</option>
+									<option th:each="subMenu : ${subMenu}" th:value="${subMenu[0]}" th:text="${subMenu[1]}"
+									th:selected="${subMenu[0]}"></option>
+								</select>
+								<input type="hidden" name="grpNm" value="">
+			    			</div>
+			  			</div>
+					</div>
+					<div id="otherGropeDiv" class="col-sm-4 col-xs-4 col-md-4" style="display:none;">
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			    				<input type="text" class="form-control form-control-sm" name="new_grp_nm" value="" maxLength="25" style="visibility: hidden;">
+			    			</div>
+			    		</div> 
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Menu Path<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<input type="text" class="form-control form-control-sm" name="menu_path" th:value="${formDetails?.path ?: ''}" maxLength="60" title="Max Length 60 chars">
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Menu Type<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<select class="form-select form-select-sm" name="menu_type" id="menu_type">
+		      						<option th:value="F" th:selected="${formDetails?.type == 'F'}">Form</option><!-- <%if(menu_type.equals("F")){%> selected="selected" <%}%> -->
+		      						<option th:value="R" th:selected="${formDetails?.type == 'R'}">Report</option><!-- <%if(menu_type.equals("R")){%> selected="selected" <%}%> -->
+								</select>
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">  
+						<div class="form-group row">
+			    			<label class="form-label"><b>Menu Priority<span class="s-red">*</span></b></label>
+			  			</div>
+					</div>
+					<div class="col-sm-9 col-xs-9 col-md-9">  
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			    				<input type="text" class="form-control form-control-sm" name="group_priority" value="" onkeyup="checkForNumber(this);" maxLength="2">
+			    			</div>
+			  			</div>
+					</div>
+				</div>
+				<div class="row m-b-5">
+					<div class="col-sm-3 col-xs-3 col-md-3">
+						<label class="form-label"><b>Status</b></label>
+					</div>
+					<div class="col-sm-3 col-xs-3 col-md-3">
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			      				<div class="form-check form-switch">
+									<input class="form-check-input" name="active" type="checkbox" role="switch" id="flexSwitchCheckChecked" onclick="setActiveInactive(this);" 
+									th:checked="${formDetails?.flag == true}">
+								  	<label class="form-check-label" for="flexSwitchCheckChecked" id="lb">
+								  		Active
+								  	</label>
+								  	<input type="hidden" name="status_flag" id="status_flag" value="${formDetails?.flag? 'Y' : 'N'}">
+								</div>
+								<script>setActiveInactive(document.forms[0].active)</script>
+			    			</div>
+			  			</div>
+					</div>
+					<!-- <div class="col-sm-6 col-xs-6 col-md-6">
+						<div class="form-group row">
+			    			<div class="col-sm-12 col-xs-12 col-md-12">
+			    				<div class="d-flex justify-content-end">
+			    					<div><input type="checkbox" class="form-check-input" name="sei_central" value="Y">&nbsp;SEI Central&nbsp;<span style="color:var(--top_header_font_color);"><i class="fa fa-universal-access" aria-hidden="true"></i></span></div>
+			    					<%if(sei_central.equals("Y")){ %>checked<%} %>
+			    				</div>
+			    			</div>
+			    		</div>
+			    	</div> -->
+				</div>
+			</div>
+			<div class="card-footer cdfooter text-center">
+				<div class="d-flex justify-content-between">
+					<input type="button" class="btn btn-warning com-btn" value="Reset" onclick="location.reload();">
+					<input type="button" class="btn btn-warning com-btn" value="Submit" onclick="doSubmit();">
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<input type="hidden" name="pre_module_cd" value="${module_cd}">
+	
+</form>
+</div>
+</body>
+</html>

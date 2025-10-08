@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html
+th:replace="~{home/base :: parent('Task Category Master',~{::#mainContent},~{::#customeScripts})}" 
+xmlns:th="http://www.thymleaf.org">
+<head>
+<meta charset="UTF-8">
+</head>
+<body>
+<div id="customeScripts">
+<script>
+$(document).ready(function() {
+	
+	$('#tbsearch th').each(function(i){
+		//alert(i)
+		var title = $(this).text();
+		if(title == "Select")
+		{
+			//$(this).html(title+'<div align="center"><input type="text" class="form-control form-control-sm" id="table_'+title+'" onkeyup="Search(this,'+i+');" placeholder="Search '+title+'" style="width:40px"/></div>');
+		}
+		else
+		{
+			$(this).html(title+'<div align="center"><input type="text" class="form-control form-control-sm" id="table_'+title+'" onkeyup="Search(this,'+i+');" placeholder="Search '+title+'" style="width:100px"/></div>');
+		}
+	});
+	
+});
+
+function Search(obj, indx) 
+{
+  	var input, filter, table, tr, td, i, txtValue,count=0;
+  	input = document.getElementById(obj.id);
+  	
+  	filter = input.value.toLocaleLowerCase();
+  	table = document.getElementById("example");
+  	
+  	tr = table.getElementsByTagName("tr");
+  	for (i = 1; i < tr.length; i++) 
+  	{
+    	td = tr[i].getElementsByTagName("td")[indx];
+    	//tbody=tr[i].getElementsByTagName("tbody");alert(tbody)
+    	if (td) 
+    	{
+      		txtValue = td.textContent || td.innerText;
+      		if (txtValue.toLocaleLowerCase().indexOf(filter) > -1) {
+        		tr[i].style.display = "";
+        		count++;
+      		} else {
+      			tr[i].style.display = "none";
+      		}
+    	}       
+  	}
+}
+function refresh(opration)
+{
+	var url = "frm_tasks_category_mst.html?opration="+opration;
+
+	document.getElementById("loading").style.visibility = "visible";
+	location.replace(url);
+}
+
+function textCounter(field, countfield, maxlimit)
+{
+	if(field.value.length > maxlimit)
+	{
+		field.value = field.value.substring(0, maxlimit);
+	}
+	else
+	{
+		countfield.value = maxlimit - field.value.length;
+	}
+}
+
+function doSubmit()
+{
+	var opration = document.forms[0].opration.value;
+	
+	var msg="";
+	var flag=true;
+	
+	var category_nm = document.forms[0].category_nm.value;
+	var category_abbr = document.forms[0].category_abbr.value;
+	
+	if(category_nm=="" || category_nm=="0" || trim(category_nm)=="")
+	{
+		msg+="Enter Category Name!\n";
+		flag=false
+	}
+	
+	if(category_abbr=="" || category_abbr=="0" || trim(category_abbr)=="")
+	{
+		msg+="Enter Category ABBR!\n";
+		flag=false
+	}
+
+	if(flag)
+	{
+		var a;
+		
+		a = confirm("Do you want to "+opration+" Category Detail?")
+
+		if(a)
+		{
+			document.getElementById("loading").style.visibility = "visible";
+			document.forms[0].submit();
+		}
+	}
+	else
+	{
+		alert(msg);
+	}
+}
+
+function doClear()
+{
+	document.forms[0].category_cd.value="";
+	document.forms[0].category_nm.value="";
+	document.forms[0].category_abbr.value="";
+	document.forms[0].opration.value="INSERT";
+}
+
+function doModify(CATE_CD,CATE_NM,CATE_ABBR,CATE_FLAG)
+{
+
+	document.forms[0].category_cd.value=CATE_CD;
+	document.forms[0].category_nm.value=CATE_NM;
+	document.forms[0].category_abbr.value=CATE_ABBR;
+
+	if(CATE_FLAG == 'Y')
+	{
+		document.forms[0].active.checked=true;
+		document.getElementById("lb").innerHTML="Active";
+		document.getElementById("status_flag").value="Y";
+	}
+	else
+	{
+		document.forms[0].active.checked=false;
+		document.getElementById("lb").innerHTML="Deactive";
+		document.getElementById("status_flag").value="N";
+	}
+	
+	document.forms[0].opration.value="MODIFY";
+}
+
+function setActiveInactive(obj)
+{
+	if(obj.checked)
+	{
+		document.getElementById("lb").innerHTML="Active";
+		document.getElementById("status_flag").value="Y";
+	}
+	else
+	{
+		document.getElementById("lb").innerHTML="Deactive";
+		document.getElementById("status_flag").value="N";
+	}
+}
+
+var newWindow;
+function exportToXls()
+{
+	var url = "xls_Category_mst.jsp?fileName=Category Master Report.xls";
+
+	location.replace(url);
+}
+</script>
+</div>
+
+<div id="mainContent">
+<form action="/task_mgmt/frm_tasks_category_mst" method="post">
+	<div class="box-body">
+		<div class="row">
+			<div class="fadealert" th:if="${message != null and message.contains('successfully')}">
+			  <div class='container'>
+			    <div class='alert alert-success'>
+			      <i class='fa fa-check-circle fa-lg'></i>&nbsp;
+			      <span th:text="${message}">Success message here</span>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="fadealert" th:if="${message != null and (message.contains('Error') or message.contains('Empty'))}">
+			  <div class='container'>
+			    <div class='alert alert-danger'>
+			      <i class='fa fa-times-circle fa-lg'></i>&nbsp;
+			      <span th:text="${message}">Error message here</span>
+			    </div>
+			  </div>
+			</div>
+			<div class="card cardmain">
+				<div class="card-header cdheader topheader">
+					<div class="d-flax justify-content-between">
+					    <div class="topheader">
+						    Task Category Master
+					    </div>
+					</div>			
+				</div>
+				<div class="card-body cdbody">
+					<div class="row m-b-5">
+						<div class="col-sm-12 col-xs-12 col-md-12" align="right">
+							<div class="btn-group">
+								<label class="btn btn-outline-secondary subbtngrp" data-bs-toggle="modal" data-bs-target="#categoryModal" onclick="doClear();">Add New Category</label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 col-xs-12 col-md-12">
+							<div class="table-responsive">
+								<table class="table table-bordered" id="example">
+									<thead id="tbsearch">
+										<tr valign="top">
+											<th >Select</th>
+											<th >Name</th>
+											<th >Abbreviation</th>
+											<th>Status</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:if="${task_categories_size} > 0" th:each="task_category : ${task_categories}">
+											<td align="center">
+												<font title="Click to Edit" style="color:var(--header_color)">
+													<i class="fa fa-edit fa-lg" data-bs-toggle="modal" data-bs-target="#categoryModal" 
+													th:attr="data-cd=${task_category.categoryCd},
+													data-nm=${task_category.name},
+													data-abbr=${task_category.abbr},
+													data-status=${task_category.status}"
+													onclick="doModify(this.getAttribute('data-cd'),this.getAttribute('data-nm'),this.getAttribute('data-abbr'),this.getAttribute('data-status'))">
+													</i>
+												</font>
+											</td>
+											<td align="center" th:text="${task_category.name}"></td>
+											<td align="center" th:text="${task_category.abbr}"></td>
+											<td align="center">
+												<div align="center">
+													<font th:style="${task_category.status == 'Y' ? 'color : #a6ff4d' : 'color : red'}">
+														<i class="fa fa-circle fa-lg" ></i>
+														&nbsp;
+													</font>
+													<span th:text="${task_category.status == 'Y' ? 'Active' : 'Inactive'}"></span>
+												</div>
+											</td>										
+										</tr>
+										<tr  th:if="${task_categories_size} <= 0">
+											<td colspan="16" align="center">
+												<b>Category List is not Available!</b>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="categoryModal" data-bs-backdrop="static" data-bs-keyboard="false">
+		<div class="modal-dialog modal-dialog-scrollable modal-xl">
+	    	<div class="modal-content">
+	    		<div class="modal-header cdheader">
+	        		<div class="topheader">
+						Add/Modify Category
+					</div>
+	        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+	      		</div>
+	      		<div class="modal-body mdbody">
+					<div class="card-body cdbody">
+						<div class="row m-b-5">
+							<div class="col-sm-2 col-xs-2 col-md-2">  
+								<div class="form-group row">
+									<label class="form-label"><b>Category <span class="s-red">*</span></b></label>
+					  			</div>
+							</div>
+							<div class="col-sm-4 col-xs-4 col-md-4">  
+								<div class="form-group row">
+					    			<div class="col-sm-12 col-xs-12 col-md-12">
+					      				<input type="text" class="form-control form-control-sm" name="category_nm" value="" maxLength="100">
+					      				<input type="hidden" class="form-control form-control-sm" name="category_cd" value="">
+					    			</div>
+					  			</div>
+							</div>
+						</div>
+						<div class="row m-b-5">
+							<div class="col-sm-2 col-xs-2 col-md-2"> 
+								<div class="form-group row">
+					    			<label class="form-label"><b>Category Abbreviation<span class="s-red">*</span></b></label>
+					  			</div>
+							</div>
+							<div class="col-sm-4 col-xs-4 col-md-4">  
+								<div class="form-group row">
+					    			<div class="col-sm-12 col-xs-12 col-md-12">
+					      				<div class="input-group input-group-sm" >
+				      						<input type="text" class="form-control form-control-sm" name="category_abbr" value="" maxLength="40" >
+			      						</div>
+					    			</div>
+					  			</div>
+							</div>
+						</div>
+						<div class="row m-b-5">
+							<div class="col-sm-2 col-xs-2 col-md-2">
+								<label class="form-label"><b>Status</b></label>
+							</div>
+							<div class="col-sm-4 col-xs-4 col-md-4">
+								<div class="form-group row">
+					    			<div class="col-sm-12 col-xs-12 col-md-12">
+					      				<div class="form-check form-switch">
+											<input class="form-check-input" name="active" type="checkbox" role="switch" id="flexSwitchCheckChecked" checked onclick="setActiveInactive(this);">
+										  	<label class="form-check-label" for="flexSwitchCheckChecked" id="lb">
+										  		Active
+										  	</label>
+										  	<input type="hidden" name="status_flag" id="status_flag" value="Y">
+										</div>
+					    			</div>
+					  			</div>
+							</div>
+						</div>
+					</div>
+	      		</div>
+	      		<div class="modal-footer cdfooter">
+	        		<div class="d-flex justify-content-between">
+						<input type="button" class="btn btn-warning com-btn" value="Reset" onclick="location.reload();">
+						<input type="button" class="btn btn-warning com-btn" value="Submit" onclick="doSubmit();">
+					</div>
+	      		</div>
+	      	</div>
+		</div>
+	</div>
+	
+	<input type="hidden" name="opration">
+	
+</form>
+</div>
+
+</body>
+</html>

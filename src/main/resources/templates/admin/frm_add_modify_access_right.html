@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html 
+xmlns:th="https://www.thymeleaf.org"
+th:replace="~{home/base :: parent('Add/Modify Access Right',~{::#mainContent},~{::#customeScripts})}"
+>
+<head>
+<meta charset="UTF-8">
+<title></title>
+</head>
+<body>
+<div id="mainContent">
+<form method="post" th:action="@{/admin/frm_add_modify_access_right}">
+<div class="box-body">
+	<div class="row">
+		<div class="col-md-12 col-sm-12 col-xs-12">
+			<div class="fadealert" th:if="${message != null and message.contains('successfully')}">
+			  <div class='container'>
+			    <div class='alert alert-success'>
+			      <i class='fa fa-check-circle fa-lg'></i>&nbsp;
+			      <span th:text="${message}">Success message here</span>
+			    </div>
+			  </div>
+			</div>
+			
+			<div class="fadealert" th:if="${message != null and (message.contains('Error') or message.contains('Empty'))}">
+			  <div class='container'>
+			    <div class='alert alert-danger'>
+			      <i class='fa fa-times-circle fa-lg'></i>&nbsp;
+			      <span th:text="${message}">Error message here</span>
+			    </div>
+			  </div>
+			</div>
+			<div class="card cardmain">
+				<div class="card-header cdheader topheader">
+				    Add/Modify Access Right
+				</div>
+				<div class="card-body cdbody">
+					<div class="row m-b-15">
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+						<div class="col-sm-2 col-xs-2 col-md-2">  
+							<div class="form-group row">
+				    			<label class=""><b>Access Group</b></label>
+				  			</div>
+						</div>
+						<div class="col-sm-4 col-xs-4 col-md-4">  
+							<div class="form-group row">
+				    			<div class="col-sm-12 col-xs-12 col-md-12">
+				      				<select class="form-select form-select-sm" name="group_cd" id="group_cd" onchange="refresh();">
+										<option value="0"> -- Select -- </option>
+										<option th:each="accessGroup : ${accessGroup}" th:value="${accessGroup.id}" 
+										th:text="${accessGroup.name}" th:selected="${group_cd} == ${accessGroup.id}">Access Group</option>
+									</select>
+				    			</div>
+				  			</div>
+						</div>
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+					</div>
+					<div class="row m-b-15">
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+						<div class="col-sm-2 col-xs-2 col-md-2"> 
+							<div class="form-group row">
+				    			<label class=""><b>Module</b></label>
+				  			</div>
+						</div>
+						<div class="col-sm-4 col-xs-4 col-md-4">  
+							<div class="form-group row">
+				    			<div class="col-sm-12 col-xs-12 col-md-12">
+				      				<select class="form-select form-select-sm" name="module_cd" id="module_cd" onchange="refresh();">
+										<option value="0"> -- Select -- </option>
+										<option th:each="module : ${modules}" th:value="${module.module_cd}" 
+										th:text="${module.module_name}" th:selected="${module_cd} == ${module.module_cd}">Module</option>
+									</select>
+				    			</div>
+				  			</div>
+						</div>
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+					</div>
+					<div class="row m-b-15" style="display: none">
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+						<div class="col-sm-2 col-xs-2 col-md-2"> 
+							<div class="form-group row">
+				    			<label class=""><b>Sub Module</b></label>
+				  			</div>
+						</div>
+						<div class="col-sm-4 col-xs-4 col-md-4">  
+							<div class="form-group row">
+				    			<div class="col-sm-12 col-xs-12 col-md-12">
+				      				<select class="form-select form-select-sm" name="sub_module_cd" id="sub_module_cd" onchange="refresh();">
+										<option value="All">All</option>
+									</select>
+				    			</div>
+				  			</div>
+						</div>
+						<div class="col-sm-3 col-xs-3 co1-md-3"></div>
+					</div>
+				</div>
+				<div class="card-body cdbody">
+					<div th:if="${module_cd != '0' and group_cd != '0'}" class="table-responsive">
+						<table class="table table-bordered">
+							<thead>
+								<tr>
+									<th rowspan="2">Form/Report</th>
+									<th rowspan="2">Check<br>All</th>
+									<th colspan="9">Access Rights</th>
+								</tr>
+								<tr>
+									<th th:each="permission : ${permissions}">
+									    <input type="checkbox" class="form-check-input" 
+									           th:attr="onclick='setVarticalAccessFlag(this, document.forms[0].' + ${permission.name} + '_acs, document.forms[0].' + ${permission.name} + '_acs_flag)'">
+									    <span th:text="${permission.name}"></span>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="form, index : ${forms}">
+									<td align="center" >
+										<b  th:text="${form.formNm}"></b>
+										<input type="hidden" name="menu_cd" th:value="${form.form_cd}">
+									</td>
+									<td>
+										<div align="center">
+											<input type="checkbox" class="form-check-input" th:name="chkAll+${index.index}" id="chkAll+${index.index}" th:onclick="'setHorizontalAccessFlag(this, \'' + ${index.index} + '\')'">
+										</div>
+									</td>
+									<td th:each="permission, i : ${permissions}">
+									    <div align="center">
+									       <input type="checkbox"
+										       class="form-check-input"
+										       th:name="${permission.name + '_acs'}"
+										       th:id="${permission.name + '_acs' + index.index}"
+										       th:data-name="${permission.name}"
+										       th:data-index="${index.index}"
+										       th:onclick="'setAccessFlag(this)'"
+										       th:checked="${permission.name == 'READ' ? VREAD_ACS_FLAG[index.index] : 
+										       permission.name == 'WRITE' ? VWRITE_ACS_FLAG[index.index] : 
+										       permission.name == 'CHECK' ? VCHECK_ACS_FLAG[index.index] : 
+										       permission.name == 'PRINT' ? VPRINT_ACS_FLAG[index.index] : 
+										       permission.name == 'DELETE' ? VDELETE_ACS_FLAG[index.index] : 
+										       permission.name == 'AUDIT' ? VAUDIT_ACS_FLAG[index.index] : 
+										       permission.name == 'AUTHORIZE' ? VAUTHORIZE_ACS_FLAG[index.index] : 
+										       permission.name == 'APPROVE' ? VAPPROVE_ACS_FLAG[index.index] : 
+										       permission.name == 'EXECUTE' ? VEXECUTE_ACS_FLAG[index.index] : false}"
+										       >
+
+									        <input type="hidden" 
+									               th:name="${permission.name + '_acs_flag'}" 
+									               th:id="${permission.name + '_acs_flag'+index.index}" 
+									               th:value="${permission.name == 'READ' ? (VREAD_ACS_FLAG[index.index] ? 'Y' : 'N') : 
+									                      permission.name == 'WRITE' ? (VWRITE_ACS_FLAG[index.index] ? 'Y' : 'N') : 
+									                      permission.name == 'CHECK' ? (VCHECK_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'PRINT' ? (VPRINT_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'DELETE' ? (VDELETE_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'AUDIT' ? (VAUDIT_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'AUTHORIZE' ? (VAUTHORIZE_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'APPROVE' ? (VAPPROVE_ACS_FLAG[index.index] ? 'Y' : 'N') :
+									                      permission.name == 'EXECUTE' ? (VEXECUTE_ACS_FLAG[index.index] ? 'Y' : 'N') : 'N'}"
+									    	>
+									    </div>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div th:if="${module_cd == '0' and group_cd == '0'}"  align="center"><b>Please Select Group Name and Module Name!</b></div>
+				</div>
+				<div class="card-footer cdfooter text-center">
+					<div class="d-flex justify-content-between">
+						<input type="button" class="btn btn-warning com-btn" value="Reset" onclick="location.reload();">
+						<input type="button" class="btn btn-warning com-btn" value="Submit" onclick="doSubmit();">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</form>
+</div>
+
+<div id="customeScripts">
+<script type="text/javascript">
+function refresh()
+{
+	var module_cd = document.forms[0].module_cd.value;
+	var group_cd = document.forms[0].group_cd.value;
+	var sub_module_cd = document.forms[0].sub_module_cd.value;
+	
+	var url = "frm_add_modify_access_right?module_cd="+module_cd+"&group_cd="+group_cd+"&sub_module_cd="+sub_module_cd;
+	
+	document.getElementById("loading").style.visibility = "visible";
+	location.replace(url);
+}
+
+function setAccessFlag(obj,id)
+{
+	var permissionName = obj.getAttribute('data-name');
+    var index = obj.getAttribute('data-index');
+    var flagId = permissionName + '_acs_flag' + index;
+    
+	if(obj.checked)
+	{
+		document.getElementById(flagId).value="Y";
+	}
+	else
+	{
+		document.getElementById(flagId).value="N";
+	}
+}
+
+function setVarticalAccessFlag(obj, checkbox_nm, flag_id)
+{
+	if(checkbox_nm!=null && checkbox_nm.length!=undefined)
+	{
+		for(var i=0; i<checkbox_nm.length; i++)
+		{
+			if(obj.checked)
+			{
+				checkbox_nm[i].checked=true;
+				flag_id[i].value="Y";
+			}
+			else
+			{
+				checkbox_nm[i].checked=false;
+				flag_id[i].value="N";
+			}
+		}
+	}
+	else
+	{
+		if(obj.checked)
+		{
+			checkbox_nm.checked=true;
+			flag_id.value="Y";
+		}
+		else
+		{
+			checkbox_nm.checked=false;
+			flag_id.value="N";
+		}
+	}
+}
+
+function setHorizontalAccessFlag(obj,index)
+{
+	if(obj.checked)
+	{
+		document.getElementById("READ_acs"+index).checked=true;
+		document.getElementById("WRITE_acs"+index).checked=true;
+		document.getElementById("CHECK_acs"+index).checked=true;
+		document.getElementById("PRINT_acs"+index).checked=true;
+		document.getElementById("DELETE_acs"+index).checked=true;
+		document.getElementById("AUDIT_acs"+index).checked=true;
+		document.getElementById("AUTHORIZE_acs"+index).checked=true;
+		document.getElementById("APPROVE_acs"+index).checked=true;
+		document.getElementById("EXECUTE_acs"+index).checked=true;
+		
+		document.getElementById("READ_acs_flag"+index).value="Y";
+		document.getElementById("WRITE_acs_flag"+index).value="Y";
+		document.getElementById("CHECK_acs_flag"+index).value="Y";
+		document.getElementById("PRINT_acs_flag"+index).value="Y";
+		document.getElementById("DELETE_acs_flag"+index).value="Y";
+		document.getElementById("AUDIT_acs_flag"+index).value="Y";
+		document.getElementById("AUTHORIZE_acs_flag"+index).value="Y";
+		document.getElementById("APPROVE_acs_flag"+index).value="Y";
+		document.getElementById("EXECUTE_acs_flag"+index).value="Y";
+	}
+	else
+	{
+		document.getElementById("READ_acs"+index).checked=false;
+		document.getElementById("WRITE_acs"+index).checked=false;
+		document.getElementById("CHECK_acs"+index).checked=false;
+		document.getElementById("PRINT_acs"+index).checked=false;
+		document.getElementById("DELETE_acs"+index).checked=false;
+		document.getElementById("AUDIT_acs"+index).checked=false;
+		document.getElementById("AUTHORIZE_acs"+index).checked=false;
+		document.getElementById("APPROVE_acs"+index).checked=false;
+		document.getElementById("EXECUTE_acs"+index).checked=false;
+		
+		document.getElementById("READ_acs_flag"+index).value="N";
+		document.getElementById("WRITE_acs_flag"+index).value="N";
+		document.getElementById("CHECK_acs_flag"+index).value="N";
+		document.getElementById("PRINT_acs_flag"+index).value="N";
+		document.getElementById("DELETE_acs_flag"+index).value="N";
+		document.getElementById("AUDIT_acs_flag"+index).value="N";
+		document.getElementById("AUTHORIZE_acs_flag"+index).value="N";
+		document.getElementById("APPROVE_acs_flag"+index).value="N";
+		document.getElementById("EXECUTE_acs_flag"+index).value="N";
+	}
+}
+
+function doSubmit()
+{
+	var module_cd = document.forms[0].module_cd.value;
+	var group_cd = document.forms[0].group_cd.value;
+	
+	var msg = "";
+	var flag = true;
+	
+	if(group_cd == "" || trim(group_cd)=="" || group_cd == "0")
+	{
+		msg+="Please Select Access Group!\n";
+		flag=false;
+	}
+	
+	if(flag)
+	{
+		var a= confirm("Do you Want to Submit Access Rights Detail?");
+		if(a)
+		{
+			document.getElementById("loading").style.visibility = "visible";
+			document.forms[0].submit();
+		}
+	}
+	else
+	{
+		alert(msg);
+	}
+}
+</script>
+</div>
+</body>
+</html>

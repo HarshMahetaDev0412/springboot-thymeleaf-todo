@@ -1,0 +1,100 @@
+@import url('global_variable.css');
+
+.navbar {
+    
+    padding-top: 1px;
+    padding-bottom: 1px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+}
+
+.navbar-dark .navbar-nav a.nav-link {
+  color: var(--header_font_color);
+  font-size:var(--font_size);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.navbar-dark .navbar-nav .nav-link:focus, .navbar-dark .navbar-nav .nav-link:hover {
+    color: azure;
+}
+
+.dropdown-menu {
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+  border: none;
+  padding: 0.5em;
+}
+
+.dropdown-item
+{
+	padding:0.25rem 0.25rem;
+}
+@media only screen and (min-width: 992px) {
+  .dropdown:hover .dropdown-menu {
+    display: flex;
+  }
+  .dropdown-menu.show {
+    display: flex;
+  }
+  
+  .dropdown:hover .profile_dp_menu {
+	display: block;
+	right: 0;
+    left: auto;
+  }
+  
+  .profile_dp_menu.show {
+	display: block;
+  }
+}
+.dropdown-menu ul {
+  list-style: none;
+  padding: 0;
+}
+.dropdown-menu li .dropdown-item {
+  color: var(----navbar_dropdown_font_color);
+  font-size:var(--font_size);
+  padding:4px 16px 4px 4px;
+}
+.dropdown-menu li .dropdown-item:hover {
+  background-color: var(--header_color);
+  color:var(--header_font_color);
+  border-radius: .25rem;
+}
+.dropdown-menu li:first-child a {
+  font-weight: bold;
+  font-size: var(--header_font_size);
+  text-transform: uppercase;
+  /*color: var(--header_color);*/
+  color: #dc3545;
+  pointer-events: none;
+}
+
+.profile_dp_menu li:first-child a {
+  font-weight: bold;
+  font-size: var(--header_font_size);
+  text-transform: uppercase;
+  /*color: var(--header_color);*/
+  color: black;
+  pointer-events: none;
+}
+
+/* .dropdown-menu li:first-child a:hover {
+  background-color: var(--header_font_color);
+  color:var(--header_color)
+}
+ */
+ @media only screen and (max-width: 992px) {
+  .dropdown-menu.show {
+    flex-wrap: wrap;
+    max-height: 350px;
+    overflow-y: scroll;
+  }
+}
+
+@media only screen and (min-width: 992px) and (max-width: 1140px) {
+  .dropdown:hover .dropdown-menu {
+    width: 40vw;
+    flex-wrap: wrap;
+  }
+}

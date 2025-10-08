@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en"
+      th:replace="~{home/base :: parent('Home',~{::#mainContent},~{::#customScripts})}"
+      xmlns:th="http://www.thymeleaf.org">
+<head></head>
+<body>
+
+<div id="mainContent" class="container mt-5">
+
+    <!-- Hero Section -->
+    <section class="text-center mb-5 p-5 bg-light rounded shadow-sm">
+        <h1 class="display-4 fw-bold text-primary">Welcome to TODO App</h1>
+        <p class="lead text-muted">Organize your tasks, plan your day, and boost your productivity with ease.</p>
+        <a th:href="@{/task_mgmt/tasks}" class="btn btn-primary btn-lg mt-3 px-4" >View Your Tasks</a>
+    </section>
+
+    <!-- 🔗 Quick Access Section -->
+    <section class="mt-5">
+        <h2 class="text-center mb-4">Quick Access</h2>
+        <div class="row text-center">
+            <div class="col-md-3 mb-4">
+                <a th:href="@{/task_mgmt/tasks}" class="text-decoration-none">
+                    <div class="p-4 bg-white border rounded shadow-sm h-100">
+                        <i class="fas fa-tasks fa-2x text-primary mb-2"></i>
+                        <h6>Manage Tasks</h6>
+                        <p class="text-muted small">Add, edit, or delete your daily tasks.</p>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-3 mb-4">
+			  <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#reportModal">
+			    <div class="p-4 bg-white border rounded shadow-sm h-100">
+			      <i class="fas fa-file-alt fa-2x text-success mb-2"></i>
+			      <h6>Task Reports</h6>
+			      <p class="text-muted small">Generate progress and status reports.</p>
+			    </div>
+			  </a>
+			</div>
+            <div class="col-md-3 mb-4">
+			    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#calanderModal">
+			        <div class="p-4 bg-white border rounded shadow-sm h-100">
+			            <i class="fas fa-calendar-alt fa-2x text-warning mb-2"></i>
+			            <h6>Task Calendar</h6>
+			            <p class="text-muted small">Visualize your tasks on a calendar.</p>
+			        </div>
+			    </a>
+			</div>
+            <div class="col-md-3 mb-4">
+                <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#chartModal">
+                    <div class="p-4 bg-white border rounded shadow-sm h-100">
+                        <i class="fa-solid fa-chart-pie fa-2x text-danger mb-2"></i>
+                        <h6>Charts</h6>
+                        <p class="text-muted small">View Charts</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 📊 Important Insights Section -->
+    <section class="mt-5">
+        <h2 class="text-center mb-4">Important Insights</h2>
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <i class="fas fa-tasks fa-2x text-primary mb-3"></i>
+                    <h5>Total Tasks</h5>
+                    <p class="display-6 fw-bold" th:text="${totalTasks}">--</p>
+                    <p class="text-muted">All tasks in your workspace</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <i class="fas fa-hourglass-half fa-2x text-warning mb-3"></i>
+                    <h5>Pending Tasks</h5>
+                    <p class="display-6 fw-bold" th:text="${pendingTasks}">--</p>
+                    <p class="text-muted">Tasks not yet completed</p>
+                </div>
+            </div>
+
+            <div class="col-md-4 mb-4">
+                <div class="bg-white p-4 rounded shadow-sm border">
+                    <i class="fas fa-check-circle fa-2x text-success mb-3"></i>
+                    <h5>Completed Tasks</h5>
+                    <p class="display-6 fw-bold" th:text="${completedTasks}">--</p>
+                    <p class="text-muted">Great job staying on track!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="text-center mt-5 text-muted small">
+        &copy; 2025 TODO App. Built by Harsh Maheta with Spring Boot & Thymeleaf.
+    </footer>
+	
+	<!-- 🌐 Floating Chat Button (Bottom-Left) -->
+	<a href="#" class="chat-button" title="Chat" onclick="alert('Chat Is Yet to be Developed!'); return false;">
+	  <i class="fas fa-comments"></i>
+	</a>
+	
+	<!-- Report Modal -->
+	<div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+	  <div class="modal-dialog">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <h5 class="modal-title" id="reportModalLabel">Generate Task Report</h5>
+	        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+	      </div>
+	      <div class="modal-body">
+	        <p>Select the file format to generate your task report:</p>
+	        <div class="d-flex justify-content-around mt-4">
+				<a href="/todo_home/export/excel" class="btn btn-outline-success">
+					<i class="fas fa-file-excel fa-lg me-2"></i> XLS
+				</a>
+				<a href="/todo_home/export/docx" class="btn btn-outline-info">
+					<i class="fas fa-file-word fa-lg me-2"></i> DOCX
+				</a>
+				<!-- <a href="/todo_home/export/pdf" class="btn btn-outline-danger">
+					<i class="fas fa-file-pdf fa-lg me-2"></i> PDF
+				</a> -->
+	        </div>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+	<!-- Calander Modal -->
+	<div class="modal fade" id="calanderModal" tabindex="-1" aria-labelledby="calanderModalLabel" aria-hidden="true">
+	  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+	    	<div class="modal-content">
+	    		<div class="modal-header cdheader">
+	        		<div class="topheader">
+						Task Calendar
+					</div>
+	        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+	      		</div>
+	      		<div class="modal-body mdbody">
+					<div class="card-body cdbody">
+						<div id="calendar"></div><!-- This will be replaced by the FullCalendar via JS -->
+					</div>
+	      		</div>
+	      		<div class="modal-footer cdfooter">
+	        		<div class="d-flex justify-content-end">
+						<input type="button" class="btn btn-warning com-btn" value="Close" data-bs-dismiss="modal">
+					</div>
+	      		</div>
+	      	</div>
+		</div>
+	</div>
+	<div id="taskModal" class="modal fade" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+	    <div class="modal-dialog modal-dialog-scrollable">
+	    	<div class="modal-content">
+	    		<div class="modal-header cdheader">
+	        		<div class="topheader" id="taskModalTitle">
+						Task Details
+					</div>
+	        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+	      		</div>
+	      		<div class="modal-body mdbody">
+					<div class="card-body cdbody">
+						<div class="card mb-3">
+		                    <div class="card-header bg-light">
+		                        <strong>Title</strong>
+		                    </div>
+		                    <div class="card-body">
+		                        <p id="taskTitle" class="card-text" data-bs-toggle="tooltip" title="This is the title of the task.">Sample Task Title</p>
+		                    </div>
+		                </div>
+		
+		                <!-- Description Card -->
+		                <div class="card mb-3">
+		                    <div class="card-header bg-light">
+		                        <strong>Description</strong>
+		                    </div>
+		                    <div class="card-body">
+		                        <p id="taskDescription" class="card-text" data-bs-toggle="tooltip" title="This is a detailed description of the task.">Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+		                    </div>
+		                </div>
+		
+		                <!-- Priority Card -->
+		                <div class="card mb-3">
+		                    <div class="card-header bg-light">
+		                        <strong>Priority</strong>
+		                    </div>
+		                    <div class="card-body">
+		                        <p id="taskPriority" class="card-text" data-bs-toggle="tooltip" title="Indicates the urgency of the task.">High</p>
+		                    </div>
+		                </div>
+		
+		                <!-- Category Card -->
+		                <div class="card mb-3">
+		                    <div class="card-header bg-light">
+		                        <strong>Category</strong>
+		                    </div>
+		                    <div class="card-body">
+		                        <p id="taskCategory" class="card-text" data-bs-toggle="tooltip" title="The category the task falls under.">Work</p>
+		                    </div>
+		                </div>
+					</div>
+	      		</div>
+	      		<div class="modal-footer cdfooter">
+	        		<div class="d-flex justify-content-end">
+						<input type="button" class="btn btn-warning com-btn" value="Close" data-bs-dismiss="modal">
+					</div>
+	      		</div>
+	      	</div>
+		</div>
+	</div>
+	<!-- Bootstrap Modal for Charts -->
+	<div class="modal fade" id="chartModal" tabindex="-1" aria-labelledby="chartModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+	    	<div class="modal-content">
+	    		<div class="modal-header cdheader">
+	        		<div class="topheader" id="taskModalTitle">
+						Task Chart
+					</div>
+	        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+	      		</div>
+	      		<div class="modal-body mdbody">
+					<div class="card-body cdbody">
+						<p class="text-muted">This pie chart shows the distribution of tasks based on their priority levels.</p>
+						<canvas id="priorityChart" width="400" height="400"></canvas>
+					</div>
+	      		</div>
+	      		<div class="modal-footer cdfooter">
+	        		<div class="d-flex justify-content-end">
+						<input type="button" class="btn btn-warning com-btn" value="Close" data-bs-dismiss="modal">
+					</div>
+	      		</div>
+	      	</div>
+		</div>
+    </div>
+	
+	
+</div>
+
+<!-- Scripts and Styles -->
+<div th:fragment="customScripts" id="customScripts">
+    
+    <script th:inline="javascript">
+    
+    $(document).ready(function() 
+    {
+        var tasks = /*[[${tasksJson}]]*/ '[]';
+        
+        try {
+            tasks = JSON.parse(tasks);  // Parse the JSON string into a JavaScript array
+        } catch (e) {
+            console.error('Error parsing tasksJson:', e);
+            tasks = [];  // In case of error, use an empty array
+        }
+        
+        var events = tasks.map(function(task) {
+            return {
+                title: task.title,                    // Task title
+                start: task.dueDt.split('T')[0],      // Due date (start time of the event)
+                description: task.description,        // Task description
+                priority: task.priority,              // Task priority
+                category: task.category ? task.category.name : '', // Category name as location (you can adjust this as needed)
+                completed: task.completed,            // Whether the task is completed (can be used in event rendering)
+                id: task.id                           // Unique task id (can be used for event identification)
+            };
+        });
+
+        // Initialize FullCalendar using the jQuery method
+        $('#calendar').fullCalendar({
+            header: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'month,agendaWeek,agendaDay'
+            },
+            defaultView: 'month',  // Default view is month
+            events: events,
+            eventClick: function(calEvent, jsEvent, view)
+            {
+                // If calEvent is undefined or null, log an error and exit
+                if (!calEvent) {
+                    console.error('Event data is missing or undefined.');
+                    return;
+                }
+
+                // Show the modal
+                $('#taskModal').modal('show');
+
+                // Format the start date (calEvent.start is a Moment object in v3)
+                var startDate = calEvent.start.format('YYYY-MM-DD HH:mm:ss');
+
+                // Access the data directly from the event object (calEvent)
+                document.getElementById('taskModalTitle').textContent = 'Task Details ('+startDate.split(' ')[0]+')'|| 'Task Details';
+                document.getElementById('taskTitle').textContent = calEvent.title || 'No Title';
+                document.getElementById('taskDescription').textContent = calEvent.description || 'No Description';
+                document.getElementById('taskPriority').textContent = calEvent.priority || 'No Priority';
+                document.getElementById('taskCategory').textContent = calEvent.category || 'No Location';
+            }
+        });
+
+        // Render the calendar when the modal is shown
+        $('#calanderModal').on('shown.bs.modal', function() {
+            // Ensure FullCalendar renders properly when the modal is fully visible
+            $('#calendar').fullCalendar('render'); // Use this for v3.x
+        });
+
+        // Chart configuration (base structure) - now inside ready for access to 'tasks'
+        const baseTaskData = {
+            labels: ['Low', 'Normal', 'High', 'Urgent'], // Updated to match 4 priorities
+            datasets: [{
+            	 backgroundColor: [
+                     '#4FC3F7',  // Low: Light Blue (calm, solid)
+                     '#66BB6A',  // Normal: Medium Green (standard, reassuring)
+                     '#FF8A65',  // High: Coral/Orange (warning, energetic)
+                     '#EF5350'   // Urgent: Bright Red (critical, visible)
+                 ],
+                 borderColor: [
+                     '#4FC3F7',  // Matching borders for solid look
+                     '#66BB6A',
+                     '#FF8A65',
+                     '#EF5350'
+                 ],
+                borderWidth: 1
+            }]
+        };
+
+        // Initialize the chart when the modal is shown
+        const modal = document.getElementById('chartModal');
+        const canvas = document.getElementById('priorityChart'); // Canvas element (const)
+        let ctx; // Context will be assigned later (let for flexibility)
+        let priorityChart;
+
+        if (canvas) {
+            ctx = canvas.getContext('2d'); // Get context once, safely
+        } else {
+            console.error('Canvas element #priorityChart not found. Ensure the modal HTML is loaded.');
+        }
+
+        modal.addEventListener('shown.bs.modal', function () {
+            if (!ctx) {
+                console.error('Chart context not available. Cannot render chart.');
+                return; // Exit early if no context
+            }
+
+            // Compute actual counts from the tasks array (case-insensitive handling)
+            const lowCount = tasks.filter(task => task.priority === 'Low' || task.priority === 'low').length;
+            const normalCount = tasks.filter(task => task.priority === 'Normal' || task.priority === 'normal').length;
+            const highCount = tasks.filter(task => task.priority === 'High' || task.priority === 'high').length;
+            const urgentCount = tasks.filter(task => task.priority === 'Urgent' || task.priority === 'urgent').length;
+            
+            // Optional: Handle other priorities or unknowns (e.g., add to 'Other' or log them)
+            const otherCount = tasks.length - (lowCount + normalCount + highCount + urgentCount);
+            let taskData = {
+                ...baseTaskData,
+                datasets: [{
+                    ...baseTaskData.datasets[0],
+                    data: [lowCount, normalCount, highCount, urgentCount]
+                }]
+            };
+
+            if (otherCount > 0) {
+                taskData.labels.push('Other');
+                taskData.datasets[0].backgroundColor.push('#808080'); // Gray for Other
+                taskData.datasets[0].borderColor.push('#808080');
+                taskData.datasets[0].data.push(otherCount);
+                console.warn(`Found ${otherCount} tasks with unknown priorities:`, tasks.filter(t => !['Low','Normal','High','Urgent','low','normal','high','urgent'].includes(t.priority)));
+            }
+
+            // Create or update the chart
+            if (priorityChart) {
+                priorityChart.destroy(); // Destroy previous instance if exists
+            }
+            priorityChart = new Chart(ctx, {
+                type: 'pie',
+                data: taskData,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Task Distribution by Priority'
+                        }
+                    }
+                }
+            });
+        });
+
+        // Optional: Destroy chart when modal is hidden to free resources
+        modal.addEventListener('hidden.bs.modal', function () {
+            if (priorityChart) {
+                priorityChart.destroy();
+                priorityChart = null;
+            }
+        });
+    });
+
+</script>
+
+    <style>
+        .transition {
+            transition: all 0.5s ease-in-out;
+        }
+
+        .opacity-0 {
+            opacity: 0;
+        }
+
+        /* 💬 Chat Button Styling */
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+
+        .chat-button:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
+            background-color: #0056b3;
+        }
+        
+        /* Custom modal open animation like macOS app opening */
+		
+		@keyframes modal-zoom-in {
+		  0% {
+		    opacity: 0;
+		    transform: scale(0.5);
+		    filter: drop-shadow(0 0 0 transparent);
+		  }
+		  100% {
+		    opacity: 1;
+		    transform: scale(1);
+		    filter: drop-shadow(0 10px 20px rgba(0,0,0,0.2));
+		  }
+		}
+		
+		/* Apply animation to modal-dialog when modal is shown */
+		.modal.fade .modal-dialog {
+		  transform-origin: center center;
+		  animation: modal-zoom-in 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+		}
+		
+		/* Prevent default fade transition conflicting */
+		.modal.fade.show .modal-dialog {
+		  transition: none !important;
+		}
+		        
+    </style>
+</div>
+
+</body>
+</html>

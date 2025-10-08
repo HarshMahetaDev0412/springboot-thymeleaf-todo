@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/extras/spring-security" 
+th:replace="~{home/base :: parent('Task Management',~{::#mainContent},~{::#customScripts})}" >
+<head>
+<meta charset="UTF-8">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<title>TODO Application</title>
+</head>
+<body>
+	<div id="mainContent">
+		<form action="/" method="post" enctype="multipart/form-data">
+			<div class="box-body">
+				<div class="row">
+					<div class="fadealert" th:if="${message != null and message.contains('successfully')}">
+					  <div class='container'>
+					    <div class='alert alert-success'>
+					      <i class='fa fa-check-circle fa-lg'></i>&nbsp;
+					      <span th:text="${message}">Success message here</span>
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="fadealert" th:if="${message != null and (message.contains('Error') or message.contains('Empty'))}">
+					  <div class='container'>
+					    <div class='alert alert-danger'>
+					      <i class='fa fa-times-circle fa-lg'></i>&nbsp;
+					      <span th:text="${message}">Error message here</span>
+					    </div>
+					  </div>
+					</div>
+					
+					<div class="card cardmain">
+						<div class="card-header cdheader">
+							 <div class="d-flex justify-content-between">
+								<div class="topheader">
+						    		Task Master
+			   	 				</div>
+								<a th:href="@{/todo_home/export/excel(allCompleted=${allCompleted},filt_category_cd=${filt_category_cd},from_dt=${from_dt},to_dt=${to_dt})}">
+							 		<i style="color: green;" class="fas fa-file-excel fa-3x" title="Export to Excel"></i>
+							 	</a>
+						    </div>
+						</div>
+						<div class="card-body cdbody">
+							<div class="form-group row">
+							    <!-- Category Label Section with Icon -->
+								<div class="col-sm-2 col-xs-2 col-md-2">
+									<div class="form-group row">
+										<div class="col-sm-12 col-xs-12 col-md-12"> 
+											<input style="vertical-align: middle" type="checkbox" class="form-check-input mt-0" id="allCompleted" name="allCompleted" onchange="refresh();" th:checked="${allCompleted == 'on'}" title="Only Completed">
+											&nbsp;<label class="form-label"><b>Only Completed</b></label>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-3 col-xs-3 col-md-3">
+									<div class="form-group row">
+										<div class="col-sm-4 col-xs-4 col-md-4"> 
+											<label class="form-label"><b>Category</b></label> 
+										</div>
+										<div class="col-sm-8 col-xs-8 col-md-8"> 
+											<select class="form-select form-select-sm" name="filt_category_cd" id="filt_category_cd" onchange="refresh();">
+												<option value="0" selected="selected"> -- All -- </option>
+												<option th:each="category : ${task_categories}" 
+										            th:value="${category.categoryCd}" 
+										            th:text="${category.abbr}+ '-' +${category.name}"
+										            th:selected="${filt_category_cd} == ${category.categoryCd}">Category Name
+										        </option>
+											</select>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-4 col-xs-4 col-md-4">
+									<div class="form-group row">
+										<div class="col-auto">
+											<label class="form-label"><b>From</b></label>
+										</div>
+										<div class="col-auto">
+						      				<div class="input-group input-group-sm" >
+					      						<input type="text" class="form-control form-control-sm date fmsdtpick" name="from_dt" th:value="${from_dt}" size="8" maxLength="10" 
+					      						onblur="validateDate(this);" onchange="validateDate(this);refresh();" autocomplete="off">
+					      						<span class="input-group-text"><i class="fa fa-calendar fa-lg"></i></span>
+				      						</div>
+						    			</div>
+										<div class="col-auto">
+											<label class="form-label"><b>To</b></label>
+										</div>
+										<div class="col-auto">
+						      				<div class="input-group input-group-sm" >
+					      						<input type="text" class="form-control form-control-sm date fmsdtpick" name="to_dt" th:value="${to_dt}" size="8" maxLength="10" 
+					      						onblur="validateDate(this);" onchange="validateDate(this);refresh();" autocomplete="off">
+					      						<span class="input-group-text"><i class="fa fa-calendar fa-lg"></i></span>
+				      						</div>
+						    			</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="card-body cdbody">
+							<div class="row m-b-5">
+								<div class="col-sm-12 col-xs-12 col-md-12" align="right">
+									<div class="d-flax justify-content-between">
+										<div class="btn-group">
+											<label class="btn btn-outline-secondary subbtngrp" data-bs-toggle="modal" data-bs-target="#importModal" >Import Task</label>
+											<label class="btn btn-outline-secondary subbtngrp" data-bs-toggle="modal" data-bs-target="#taskModal" onclick="doClear();">Add New Task</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-sm-12 col-xs-12 col-md-12">
+									<div class="table-responsive">
+										<table class="table table-bordered" id="example">
+											<thead id="tbsearch">
+												<tr valign="top">
+													<th >Select</th>
+													<th >Task Id</th>
+													<th >Task Title</th>
+													<th >Priority</th>
+													<th >Description</th>
+													<th >Due Date</th>
+													<th >Category</th>
+													<th >Task Status</th>
+													<th >Attachment</th>
+													<th 
+													th:attr="colspan=${#authorization.expression('hasAuthority(''TASK_DELETE'')') ? 2 : 1}">
+													Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<tr
+												th:if="${tasks_size} > 0" 
+												th:each="task, iterStat : ${tasks}">
+													<td align="center">
+														<font title="Click to Edit" style="color:var(--header_color)">
+															<i class="fa fa-edit fa-lg" data-bs-toggle="modal" data-bs-target="#taskModal" 
+															th:attr="data-title=${task.title}, data-id=${task.id}, 
+															data-cate-id=${task.category != null ? task.category.categoryCd : 0},
+															data-description=${task.description},
+															data-priority=${task.priority},
+															data-dueDt=${#dates.format(task.dueDt, 'dd/MM/yyyy')},
+															data-isAttached=${task.isAttached},
+															data-email=${task.email}"
+															onclick="selectTask(this.getAttribute('data-title'),this.getAttribute('data-id'),this.getAttribute('data-cate-id'),this.getAttribute('data-description'),this.getAttribute('data-priority'),this.getAttribute('data-dueDt'),this.getAttribute('data-isAttached'),this.getAttribute('data-email'))">
+															</i>
+														</font>
+													</td>
+													<td align="center" th:text="${task.id}"></td>
+													<td align="center" th:text="${task.title}" 
+														th:title="'Entered Date : '+${task.ent_dt != null ? #temporals.format(task.ent_dt, 'dd/MM/yyyy HH:mm:ss') : '-'}+'&#10;Modified Date : '+${task.mod_dt != null ? #temporals.format(task.mod_dt, 'dd/MM/yyyy HH:mm:ss') : '-'}">
+													</td>
+													<td align="center">
+														<i th:if="${task.priority != null}"
+														th:style="${task.priority == 'Low' ? 'color:#00ccff' 
+												          : task.priority == 'Normal' ? 'color:#00cc44' 
+												          : task.priority == 'High' ? 'color:#ff3300' 
+												          : task.priority == 'Urgent' ? 'color:#b32400' 
+												          : ''}"
+														th:class="${task.priority == 'Low' ? 'fa-solid fa-arrow-down fa-lg' 
+												          : task.priority == 'Normal' ? 'fa-solid fa-circle fa-sm' 
+												          : task.priority == 'High' ? 'fa-solid fa-exclamation fa-lg' 
+												          : task.priority == 'Urgent' ? 'fa-solid fa-tower-cell fa-lg' 
+												          : ''}"></i>&nbsp;&nbsp;<span th:text="${task.priority}"></span>
+													</td>
+													<td align="center" th:text="${task.description}"></td>
+													<td align="center" th:text="${task.dueDt != null ? #dates.format(task.dueDt, 'dd/MM/yyyy') : ''}"></td>
+													<td align="center" th:text="${task.category != null ? task.category.name : '-'}"></td>
+													<td align="center" 
+													th:style="${task.completed ? 'color: green' : 'color: red'}"><b th:text="${task.completed ? 'Completed' : 'Pending'}"></b></td>
+													<td align="center">
+													    <a th:href="@{/task/download-latest/{id}(id=${task.id})}"
+													       th:if="${task.isAttached != null && task.isAttached}"
+													       style="text-decoration: none;">
+													        <i class="fa fa-download fa-lg" style="color: blue;"></i>
+													    </a>
+													
+													    <i class="fa fa-download fa-lg"
+													       th:if="${task.isAttached == null || !task.isAttached}"
+													       style="color: DimGray; pointer-events: none;"></i>
+													</td>
+													<td align="center"><a th:href="@{/{id}/toggle(id=${task.id})}" class="btn btn-outline-secondary btn-sm">Toggle</a></td>
+													<td align="center"
+													sec:authorize="hasAuthority('TASK_DELETE')"><a 
+													th:href="@{/{id}/delete(id=${task.id})}" class="btn btn-outline-danger btn-sm">Delete</a>
+													</td>
+												</tr>
+												<tr th:if="${tasks_size} <= 0">
+													<td colspan="16" align="center">
+														<b>Category List is not Available!</b>
+													</td>
+												</tr>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+		        <div class="modal fade" id="taskModal" data-bs-backdrop="static" data-bs-keyboard="false">
+					<div class="modal-dialog modal-dialog-scrollable modal-xl">
+				    	<div class="modal-content">
+				    		<div class="modal-header cdheader">
+				        		<div class="topheader">
+									Add/Modify Task
+								</div>
+				        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+				      		</div>
+				      		<div class="modal-body mdbody">
+								<div class="card-body cdbody">
+									<div class="row m-b-5">
+										<div class="col-sm-2 col-xs-2 col-md-2">  
+											<div class="form-group row">
+												<label class="form-label"><b>Title <span class="s-red">*</span></b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-4 col-xs-4 col-md-4">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<input type="text" class="form-control form-control-sm"name="title" placeholder="Add task title...." required="required" value="" maxLength="100">
+								      				<input type="hidden" name="titleId" value="">
+								    			</div>
+								  			</div>
+										</div>
+										<div class="col-sm-2 col-xs-2 col-md-2"> 
+											<div class="form-group row">
+								    			<label class="form-label"><b>Category <span class="s-red">*</span></b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-4 col-xs-4 col-md-4">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<select class="form-select form-select-sm" name="category_cd" id="category_cd" required="required">
+														<option value="0" selected="selected"> -- Select -- </option>
+														<option th:each="category : ${task_categories}" 
+												            th:value="${category.categoryCd}" 
+												            th:text="${category.abbr}+ '-' +${category.name}">Category Name
+												        </option>
+													</select>
+								    			</div>
+								  			</div>
+										</div>
+									</div>
+									<!-- Priority Section (New Field) -->
+				                    <div class="row m-b-5">
+				                        <div class="col-sm-2 col-xs-2 col-md-2">
+				                            <div class="form-group row">
+				                                <label class="form-label"><b>Priority <span class="s-red">*</span></b></label>
+				                            </div>
+				                        </div>
+				                        <div class="col-sm-4 col-xs-4 col-md-4">
+				                            <div class="form-group row">
+				                                <div class="col-sm-12 col-xs-12 col-md-12">
+				                                    <select class="form-select form-select-sm" name="priority" id="priority" required="required">
+				                                        <option value="Low" selected="selected">Low</option>
+				                                        <option value="Normal">Normal</option>
+				                                        <option value="High">High</option>
+				                                        <option value="Urgent">Urgent</option>
+				                                    </select>
+				                                </div>
+				                            </div>
+				                        </div>
+										<div class="col-sm-2 col-xs-2 col-md-2"> 
+											<div class="form-group row">
+								    			<label class="form-label"><b>Due Date</b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-4 col-xs-4 col-md-4">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<div class="input-group input-group-sm" >
+							      						<input type="text" class="form-control form-control-sm date fmsdtpick" name="dueDt" value="" maxLength="10" 
+							      						onblur="validateDate(this);" onchange="validateDate(this);" autocomplete="off" required="required">
+							      						<span class="input-group-text"><i class="fa fa-calendar fa-lg"></i></span>
+						      						</div>
+								    			</div>
+								  			</div>
+										</div>
+									</div>
+									<div class="row m-b-5">
+										<div class="col-sm-2 col-xs-2 col-md-2"> 
+											<div class="form-group row">
+								    			<label class="form-label"><b>Description</b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-10 col-xs-10 col-md-10">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<div class="input-group input-group-sm" >
+							      						<input type="text" class="form-control form-control-sm" name="desc" placeholder="Add task Description...." value="" maxLength="40" >
+						      						</div>
+								    			</div>
+								  			</div>
+										</div>
+									</div>
+									<div class="row m-b-5">
+										<div class="col-sm-2 col-xs-2 col-md-2"> 
+											<div class="form-group row">
+								    			<label class="form-label" ><b>Attach File</b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-4 col-xs-4 col-md-4">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<div class="input-group input-group-sm" >
+							      						<input type="file" class="form-control" name="taskAttachment" id="taskAttachment">
+						      						</div>
+								    			</div>
+								  			</div>
+										</div>
+										<div class="col-sm-2 col-xs-2 col-md-2"> 
+											<div class="form-group row">
+								    			<label class="form-label" for="notifications"><b>Notifications</b></label>
+								  			</div>
+										</div>
+										<div class="col-sm-4 col-xs-4 col-md-4">  
+											<div class="form-group row">
+								    			<div class="col-sm-12 col-xs-12 col-md-12">
+								      				<div class="input-group input-group-sm" >
+								      					<div class="col-sm-1 col-xs-1 col-md-1">
+							      							<input  style="vertical-align: middle;" type="checkbox" class="form-check-input" name="notifications" id="notifications" onchange="toggleEmailField();">&nbsp;&nbsp;
+							      						</div>
+							      						<div class="col-sm-11 col-xs-11 col-md-11">
+							      							<input type="email" class="form-control" name="email" id="email" placeholder="Enter email for notifications" disabled>
+						      							</div>
+						      						</div>
+								    			</div>
+								  			</div>
+										</div>
+									</div>
+								</div>
+				      		</div>
+				      		<div class="modal-footer cdfooter">
+				        		<div class="d-flex justify-content-between">
+									<input type="button" class="btn btn-warning com-btn" value="Reset" onclick="location.reload();">
+									<input type="button" class="btn btn-warning com-btn" value="Submit" onclick="doSubmit();">
+								</div>
+				      		</div>
+				      	</div>
+					</div>
+				</div>
+		        
+		        <input type="hidden" name="opration">
+		        
+			</div>
+		</form>
+        <div class="modal fade" id="importModal" data-bs-backdrop="static" data-bs-keyboard="false">
+			<div class="modal-dialog modal-dialog-scrollable modal-xl">
+		    	<div class="modal-content">
+		    		<div class="modal-header cdheader">
+		        		<div class="topheader">
+							Import Task
+						</div>
+		        		<input type="button" class="btn-close" data-bs-dismiss="modal">
+		      		</div>
+		      		<form id="uploadForm" th:action="@{/import-file}" method="post" enctype="multipart/form-data">
+			      		<div class="modal-body mdbody">
+							<div class="card-body cdbody">
+								<div class="row m-b-5">
+		                            <div class="d-flex justify-content-between">
+		                            	<div class="form-group">
+		                            		<label for="fileInput"><b>Choose Excel File</b></label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		                                	<input type="file" class="form-control-file" id="fileInput" name="file" accept=".xls,.xlsx">
+										</div>
+										<button type="submit" class="btn btn-warning com-btn">Upload</button>
+		                            </div>
+								</div>
+								<div class="row m-b-5">
+		                            
+								</div>
+							</div>
+			      		</div>
+		      		 </form>
+		      	</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="customScripts">
+		<script type="text/javascript">
+			function selectTask(tasktitle, id, cateCd,desc,priority,dueDt,isAttached,email)
+			{
+			    document.forms[0].title.value = tasktitle;
+			    document.forms[0].titleId.value = id;
+			    document.forms[0].desc.value = desc;
+			    document.forms[0].category_cd.value = cateCd;
+			    document.forms[0].priority.value = priority;
+			    document.forms[0].dueDt.value = dueDt;
+			    //document.forms[0].taskAttachment.value = isAttached;
+			    document.forms[0].email.value = email;
+			    
+			    if(email != "" && email != null && email.length > 0)
+			    {
+			    	document.getElementById('notifications').checked = true;
+			    	toggleEmailField();
+			    }
+			    
+			    document.forms[0].opration.value="MODIFY";
+			}
+			
+			$(document).ready(function() {
+				
+				$('#tbsearch th').each(function(i){
+					//alert(i)
+					var title = $(this).text();
+					if(title == "Select")
+					{
+						//$(this).html(title+'<div align="center"><input type="text" class="form-control form-control-sm" id="table_'+title+'" onkeyup="Search(this,'+i+');" placeholder="Search '+title+'" style="width:40px"/></div>');
+					}
+					else
+					{
+						$(this).html(title+'<div align="center"><input type="text" class="form-control form-control-sm" id="table_'+title+'" onkeyup="Search(this,'+i+');" placeholder="Search '+title+'" style="width:100px"/></div>');
+					}
+				});
+				
+			});
+
+			function Search(obj, indx) 
+			{
+			  	var input, filter, table, tr, td, i, txtValue,count=0;
+			  	input = document.getElementById(obj.id);
+			  	
+			  	filter = input.value.toLocaleLowerCase();
+			  	table = document.getElementById("example");
+			  	
+			  	tr = table.getElementsByTagName("tr");
+			  	for (i = 1; i < tr.length; i++) 
+			  	{
+			    	td = tr[i].getElementsByTagName("td")[indx];
+
+			    	if (td) 
+			    	{
+			      		txtValue = td.textContent || td.innerText;
+			      		if (txtValue.toLocaleLowerCase().indexOf(filter) > -1) {
+			        		tr[i].style.display = "";
+			        		count++;
+			      		} else {
+			      			tr[i].style.display = "none";
+			      		}
+			    	}       
+			  	}
+			}
+			
+			function refresh()
+			{
+				var filt_category_cd = document.forms[0].filt_category_cd.value;
+				var from_dt = document.forms[0].from_dt.value;
+				var to_dt = document.forms[0].to_dt.value;
+				
+				var allCompleted = document.getElementById('allCompleted');
+				var checkboxVal="";
+				
+				if( allCompleted.checked){
+					checkboxVal="on";
+				}else{
+					checkboxVal="off";
+				}
+				
+				var url = "tasks?filt_category_cd="+filt_category_cd+"&allCompleted="+checkboxVal+"&from_dt="+from_dt+"&to_dt="+to_dt;
+
+				document.getElementById("loading").style.visibility = "visible";
+				location.replace(url);
+			}
+
+			function doSubmit()
+			{
+				var opration = document.forms[0].opration.value;
+				
+				var msg="";
+				var flag=true;
+				
+				var title = document.forms[0].title.value;
+				var category_cd = document.forms[0].category_cd.value;
+				var dueDt = document.forms[0].dueDt.value;
+				var priority = document.forms[0].priority.value;
+				
+				if(title=="" || trim(title)=="")
+				{
+					msg+="Enter Task Title!\n";
+					flag=false
+				}
+				
+				if(category_cd=="" || category_cd=="0" || trim(category_cd)=="")
+				{
+					msg+="Select Category for Task!\n";
+					flag=false
+				}
+
+				if(priority=="" || priority=="0" || trim(priority)=="")
+				{
+					msg+="Select Priority for Task!\n";
+					flag=false
+				}
+
+				if(dueDt=="" || dueDt=="0" || trim(dueDt)=="")
+				{
+					msg+="Enter Due Date for Task!\n";
+					flag=false
+				}
+
+				if(flag)
+				{
+					var a;
+					
+					a = confirm("Do you want to "+opration+" Task Detail?")
+
+					if(a)
+					{
+						document.getElementById("loading").style.visibility = "visible";
+						document.forms[0].submit();
+					}
+				}
+				else
+				{
+					alert(msg);
+				}
+			}
+
+			function doClear()
+			{
+				document.forms[0].title.value = "";
+			    document.forms[0].titleId.value = "";
+			    document.forms[0].desc.value = "";
+			    document.forms[0].category_cd.value = "0";
+			    document.forms[0].priority.value = "Low";
+			    document.forms[0].dueDt.value = "";
+			    document.forms[0].email.value = "";
+			    
+			    if(email != "" && email != null && email.length <= 0)
+			    {
+			    	document.getElementById('notifications').checked = false;
+			    	toggleEmailField();
+			    }
+				document.forms[0].opration.value="INSERT";
+			}
+			
+			function toggleEmailField() {
+			    var emailField = document.getElementById('email');
+			    var notificationCheckbox = document.getElementById('notifications');
+
+			    // If checkbox is checked, enable email input, otherwise disable it
+			    if (notificationCheckbox.checked) {
+			        emailField.disabled = false;
+			    } else {
+			        emailField.disabled = true;
+			    }
+			}
+
+		</script>
+	</div>
+</body>
+</html>

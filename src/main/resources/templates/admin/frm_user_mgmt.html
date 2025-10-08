@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html 
+xmlns:th="http://www.thymeleaf.org" th:replace="~{home/base :: parent('User Management',~{::#mainContent},~{::#customeScripts})}">
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<div id="mainContent">
+	<form action="/admin/frm_user_mgmt" method="post" enctype="multipart/form-data">
+		<div class="box-body">
+			<div class="row">
+				<div class="fadealert" th:if="${message != null and message.contains('Successfully')}">
+				  <div class='container'>
+				    <div class='alert alert-success'>
+				      <i class='fa fa-check-circle fa-lg'></i>&nbsp;
+				      <span th:text="${message}">Success message here</span>
+				    </div>
+				  </div>
+				</div>
+				
+				<div class="fadealert" th:if="${message != null and (message.contains('Error') or message.contains('Empty'))}">
+				  <div class='container'>
+				    <div class='alert alert-danger'>
+				      <i class='fa fa-times-circle fa-lg'></i>&nbsp;
+				      <span th:text="${message}">Error message here</span>
+				    </div>
+				  </div>
+				</div>
+				
+				<div class="card cardmain">
+					<div class="card-header cdheader">
+						 <div class="d-flex justify-content-between">
+							<div class="topheader">
+					    		User Management
+		   	 				</div>
+							<a>
+						 		<i style="color: green;" class="fas fa-file-excel fa-3x" title="Export to Excel"></i>
+						 	</a>
+					    </div>
+					</div>
+					<div class="card-body cdbody">
+						<div class="form-group row">
+							<div class="col-sm-3 col-xs-3 col-md-3">
+								<div class="form-group row">
+									<div class="col-sm-4 col-xs-4 col-md-4"> 
+										<label class="form-label"><b>Provider</b></label> 
+									</div>
+									<div class="col-sm-8 col-xs-8 col-md-8"> 
+										<select class="form-select form-select-sm" name="filt_provider" id="filt_provider" onchange="refresh();">
+											<option value="0" selected="selected"> -- All -- </option>
+											<option th:each="provider : ${providers}" th:value="${provider}" th:text="${provider}" 
+											th:selected="${filt_provider.toString()} == ${provider.toString()}"></option>
+										</select>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-body cdbody">
+						<div class="row">
+							<div class="col-sm-12 col-xs-12 col-md-12">
+								<div class="table-responsive">
+									<table class="table table-bordered" id="example">
+										<thead id="tbsearch">
+											<tr valign="top">
+												<th >Sr#</th>
+												<th >User Id</th>
+												<th >User Name</th>
+												<th >Email</th>
+												<th >Provider</th>
+												<th >On Board Date</th>
+												<th >Last Logged In</th>
+												<th >Status</th>
+												<th >Reset<br>Password</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:if="${users_size} > 0" 
+											th:each="user,iterStat : ${users}" th:style="${user.hasRole('ADMIN')} ? 'background-color: #b3ffe6;' : ''">
+												<td align="center" th:text="${iterStat.index+1}+."></td>
+												<td align="center" th:text="${user.id}"></td>
+												<td align="center" th:text="${user.name}"></td>
+												<td align="center" th:text="${user.email}"></td>
+												<td align="center">
+													<i th:if="${user.authProvider.toString()} == 'GOOGLE'" class="fa-brands fa-google"></i>
+													<i th:if="${user.authProvider.toString()} == 'LOCAL'" class="fa-solid fa-user"></i>
+													<i th:if="${user.authProvider.toString()} == 'GITHUB'" class="fa-brands fa-github"></i>
+													&nbsp;<span th:text="${user.authProvider}"></span>
+												</td>
+												<td align="center" th:text="${user.entDt}"></td>
+												<td align="center" th:text="${user.lastLoggedIn}"></td>
+												<td align="center" th:title="${user.status} == 'Y' ? 'Active' : 'Inactive'">
+													<div id="toggleLink" th:onclick="'changeStatus(' + ${iterStat.index} + ');'">
+														<i class="fa-solid fa-user fa-lg" th:if="${user.status} == 'Y'"></i>
+														<i class="fa-solid fa-user-slash fa-lg" th:if="${user.status} == 'N'" style="color: red"></i>
+													</div>
+													<input type="hidden" name="status_val" th:id="status_val_+${iterStat.index}" th:value="${user.status}">
+													<input type="hidden" name="userId" th:id="userId_+${iterStat.index}" th:value="${user.id}">
+												</td>
+												<td align="center"><i class="fa fa-key" aria-hidden="true"></i></td>
+											</tr>
+											<tr th:if="${users_size} <= 0">
+												<td colspan="14" align="center">
+													<b>Users List is not Available!</b>
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
+<!-- ********************************************************************** -->
+<div id="customeScripts">
+<script type="text/javascript">
+function refresh()
+{
+	var filt_provider = document.forms[0].filt_provider.value;
+	
+	var url = "frm_user_mgmt?filt_provider="+filt_provider;
+
+	document.getElementById("loading").style.visibility = "visible";
+	location.replace(url);
+}
+function changeStatus(index)
+{
+	var status_val = document.getElementById('status_val_'+index).value;
+	var userId = document.getElementById('userId_'+index).value;
+
+	if(status_val != 'Y')
+	{
+		status_val = 'Y';
+	}
+	else
+	{
+		status_val = 'N';
+	}
+	
+	var conf = confirm("Are you sure you want to change user status?");
+	
+	if(conf)
+	{
+		var url = "/toggle-user/status?id="+userId+"&status_val="+status_val;
+		window.location.href = url;		
+	}
+	else{
+		return;
+	}
+}
+</script>
+</div>
+</body>
+</html>

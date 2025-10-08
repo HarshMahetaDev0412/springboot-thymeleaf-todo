@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html 
+th:fragment="parent(pageName,mainContent,scripts)"
+xmlns:th="http://www.thymeleaf.org"
+xmlns:sec="https://www.thymeleaf.org/extras/spring-security" >
+<head>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" th:href="@{/bootstrap/bootstrap5/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/fontawesome-free-6.7.2/css/all.min.css}">
+    <link rel="stylesheet" th:href="@{/css/datepicker/bootstrap-datepicker3.css}">
+    <link rel="stylesheet" th:href="@{/css/util.css}">
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.css" rel="stylesheet" />
+<title th:text="'TODO | '+${pageName}"></title>
+</head>
+<body>
+	<div th:replace="~{home/nav_bar :: navbar}"></div>
+
+    <script type="text/javascript" th:src="@{/bootstrap/bootstrap5/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/jquery.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/datepicker/bootstrap-datepicker.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/datepicker/bootstrap-datepicker.es.min.js}"></script>
+    <script type="text/javascript" th:src="@{/js/util.js}"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/moment@2.29.1/moment.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/fullcalendar@3.2.0/dist/fullcalendar.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+	<!-- required scripts from the requested page -->
+	<div th:replace="${scripts}"></div>
+
+	<!-- main content from the requested page -->
+	<section th:replace="${mainContent}"></section>
+
+</body>
+</html>

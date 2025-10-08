@@ -1,0 +1,74 @@
+<th:block th:fragment="navbar">
+    <!-- <nav data-th-fragment="navbar" class="navbar navbar-expand-lg navbar-dark" style="background-color: var(--header_color);"> -->
+    <nav data-th-fragment="navbar" class="navbar navbar-expand-lg navbar-dark" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/home/todo_home" style="padding-top: 2px;padding-left: 4px;padding-right: 2px;">
+                <img th:src="@{'../img/duo_fox-removebg-preview.png'}" height="30px">
+                &nbsp;<font style="color:var(--header_font_color); font-size:24px;">TODO</font>
+            </a>
+
+            <button class="navbar-toggler" style="border-color:var(--header_font_color);" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <font><i class="fa fa-bars" style="color:var(--header_font_color);"></i></font>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <!-- Main Menu Items (Left Side) -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <th:block th:each="moduleDto : ${global_moduleDTOs}">
+					    <li class="nav-item dropdown has-megamenu">
+					        <a class="nav-link dropdown-toggle" href="#" th:text="${moduleDto.module.module_name}"></a>
+					        <div class="dropdown-menu megamenu" role="menu">
+					            <div class="row g-3">
+					                <div class="col-sm-12">
+					                    <div class="form-group row">
+					                        <th:block th:each="subMenu : ${moduleDto.subMenus}">
+					                            <div class="col-auto">
+					                                <div class="col-megamenu">
+					                                    <ul>
+					                                        <li>
+					                                            <span class="dropdown-header"><b th:text="${subMenu.subMenuNm}" style="color: red"></b></span>
+					                                        </li>
+					                                        <th:block th:each="form : ${subMenu.forms}">
+					                                            <li>
+					                                                <a class="dropdown-item" th:href="@{${form.path}}" th:text="${form.formNm}"></a>
+					                                            </li>
+					                                        </th:block>
+					                                    </ul>
+					                                </div>
+					                            </div>
+					                        </th:block>
+					                    </div>
+					                </div>
+					            </div>
+					        </div>
+					    </li>
+					</th:block>
+                </ul>
+
+                <!-- User Info and Logout (Right Side) -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <!-- Username Display -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fa fa-user me-2"></i>
+                            <span th:text="${loggeduser.name}">User </span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" style="color: red">
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/auth/logout}"><b><i class="fa fa-sign-out-alt me-2"></i>Logout</b></a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <div id="loading" style="visibility: hidden;">
+		<div id="loading-image">
+			<div class="btn-group">
+				<label class="btn" style="color:var(--header_color);border:none;font-size:20px;align-self: center;font-weight:bold;">
+					<i class="fa fa-spinner fa-pulse fa-lg"></i>&nbsp;Loading
+				</label>
+			</div>
+		</div>
+	</div>
+</th:block>
