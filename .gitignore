@@ -35,3 +35,5 @@ build/
 # Ignore uploaded task files
 app_data/uploads/task_file/
 
+# Ignore secrets file
+src/main/resources/application.properties

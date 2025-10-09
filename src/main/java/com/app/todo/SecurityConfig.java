@@ -143,7 +143,7 @@ public class SecurityConfig
                 .permitAll()
             )
 //            .oauth2Login(oauth -> oauth
-//            	    .loginPage("/auth/login")
+//            	    //.loginPage("/auth/login")
 //            	    .userInfoEndpoint(userInfo -> userInfo
 //            	    		.oidcUserService(customOAuth2UserService)
 //            	    )
