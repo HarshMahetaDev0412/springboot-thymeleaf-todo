@@ -142,18 +142,13 @@ public class SecurityConfig
                 .failureHandler(customeAuthenticationFailureHandler())
                 .permitAll()
             )
-            .oauth2Login(oauth -> oauth
-            	    //.loginPage("/auth/login")
-            	    .userInfoEndpoint(userInfo -> userInfo
-            	    		.oidcUserService(customOAuth2UserService)
-            	    )
-            	    .defaultSuccessUrl("/home/todo_home", true)
-//            	    .successHandler((request, response, authentication) -> {
-//            	        // Clear saved request to avoid redirect loop
-//            	        new HttpSessionRequestCache().removeRequest(request, response);
-//            	        response.sendRedirect("/home/todo_home");
-//            	    })
-            	)
+//            .oauth2Login(oauth -> oauth
+//            	    .loginPage("/auth/login")
+//            	    .userInfoEndpoint(userInfo -> userInfo
+//            	    		.oidcUserService(customOAuth2UserService)
+//            	    )
+//            	    .defaultSuccessUrl("/home/todo_home", true)
+//            	)
             
             .logout(logout -> logout
                 .logoutUrl("/auth/logout")

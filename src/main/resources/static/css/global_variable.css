@@ -13,16 +13,16 @@
 	--sub_header_font_size:16px;
 	
 	--tb_header_font_color: #203d78;
-	--top_header_font_color:#a0333a;
+	--top_header_font_color:#cc0000;
 	--sub_header_font_color:#203d78;
 	
-	--card_bg_color:#ededed;
+	--card_bg_color:#d2d9f9;
 	
-	--com_button_color: gold;/* #e0deaa; */ /*  gold;*/
+	--com_button_color: #667ee9;/* #e0deaa; */ /*  gold;*/
 	
-	--table-active-bg-color: #ffeb3b4d;/* #e0deaa; */ /*  #ffeb3b4d;*/
+	--table-active-bg-color:#667ee9;/* #e0deaa; */ /*  #ffeb3b4d;*/
 	
-	--sei_profile_bgclr: gold;	
+	--sei_profile_bgclr:#667ee9;	
 	
 	--temp_data_highlight: #e9ecef;
 	--sys_data_highlight: #99ffcc;
