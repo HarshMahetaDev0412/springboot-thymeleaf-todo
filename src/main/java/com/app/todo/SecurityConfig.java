@@ -142,13 +142,13 @@ public class SecurityConfig
                 .failureHandler(customeAuthenticationFailureHandler())
                 .permitAll()
             )
-//            .oauth2Login(oauth -> oauth
-//            	    //.loginPage("/auth/login")
-//            	    .userInfoEndpoint(userInfo -> userInfo
-//            	    		.oidcUserService(customOAuth2UserService)
-//            	    )
-//            	    .defaultSuccessUrl("/home/todo_home", true)
-//            	)
+            .oauth2Login(oauth -> oauth
+            	    .loginPage("/auth/login")
+            	    .userInfoEndpoint(userInfo -> userInfo
+            	    		.oidcUserService(customOAuth2UserService)
+            	    )
+            	    .defaultSuccessUrl("/home/todo_home", true)
+            	)
             
             .logout(logout -> logout
                 .logoutUrl("/auth/logout")
